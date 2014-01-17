@@ -1,4 +1,4 @@
-## UP for Laravel 4
+## UP 2 for Laravel 4
 
 UP is a file uploader with polymorphic relations.
 
