@@ -188,19 +188,26 @@ class Uploader {
         // Find a base directory include appended.
         $path = $this->path($this->config['baseDir']);
 
-        // Support old version.
-        if (isset($this->config['remote']) and $this->config['remote'] == true)
-        {
-            $this->config['type'] = 'remote';
-        }
-
         // Method to upload.
         $method = 'doUpload';
+
 
         switch ($this->config['type'])
         {
             case 'base64' : $method = 'doBase64'; break;
             case 'remote' : $method = 'doTransfer'; break;
+            case 'detect' :
+
+                if (preg_match('|^http(s)?|', $this->file))
+                {
+                    $method = 'doTransfer';
+                }
+                elseif (preg_match('|^data:|', $this->file))
+                {
+                    $method = 'doBase64';
+                }
+
+                break;
         }
 
         // Call a method.

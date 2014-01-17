@@ -59,17 +59,17 @@ class Blog extends Eloquent {
     /**
      * Blog has many files upload.
      *
-     * @return AttachmentRelate
+     * @return Attachment
      */
-    public function files()
+    public function attachments()
     {
-        return $this->morphMany('\Teepluss\Up\AttachmentRelates\Eloquent\AttachmentRelate', 'fileable');
+        return $this->morphToMany('\Teepluss\Up\Attachments\Eloquent\Attachment', 'attachmentable');
     }
 
 }
 ~~~
 
-### After create a method "files", Blog can use "UP" to upload files.
+### After create a method "attachments", Blog can use "UP" to upload files.
 
 Upload file and resizing.
 
@@ -91,17 +91,17 @@ UP::inject(array('remote' => true))->upload(User::find(1), Input::file('userfile
 Look up a file path.
 
 ~~~php
-$blogs = Blog::with('files')->get();
+$blogs = Blog::with('attachments')->get();
 
 foreach ($blogs as $blog)
 {
-    foreach ($blog->files as $file)
+    foreach ($blog->attachments as $attachment)
     {
-        echo UP::lookup($file->attachment_id);
+        echo UP::lookup($attachment->id);
 
         // or lookup with scale from config.
 
-        echo UP::lookup($file->attachment_id)->scale('l');
+        echo UP::lookup($attachment->id)->scale('l');
     }
 }
 ~~~

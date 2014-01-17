@@ -8,11 +8,11 @@ return array(
     |--------------------------------------------------------------------------
     |
     | Up allow upload type simple, remote, base64
-    | if set true the type will be simple.
+    | by the default set detect.
     |
     */
 
-    'type' => 'simple',
+    'type' => 'detect',
 
     /*
     |--------------------------------------------------------------------------

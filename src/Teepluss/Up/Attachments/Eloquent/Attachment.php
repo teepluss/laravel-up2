@@ -26,10 +26,10 @@ class Attachment extends Model implements AttachmentInterface {
      */
     public static function boot()
     {
+        // Delete relate after delete attachment.
         static::deleted(function($attachment)
         {
-            // Auto remove relates table.
-            $attachment->relates()->delete();
+            \DB::table('attachmentables')->where('attachment_id', $attachment->id)->delete();
         });
     }
 
@@ -60,16 +60,17 @@ class Attachment extends Model implements AttachmentInterface {
      *
      * @return object
      */
-    public function relates()
+    public function attachmentable()
     {
-        $attachmentRelatesModel = \Config::get('up::attachmentRelates.model');
+        $attachmentModel = \Config::get('up::attachments.model');
 
-        if ( ! $attachmentRelatesModel)
+        if ( ! $attachmentModel)
         {
-            $attachmentRelatesModel = '\Teepluss\Up\AttachmentRelates\Eloquent\AttachmentRelate';
+            $attachmentModel = '\Teepluss\Up\Attachments\Eloquent\Attachment';
         }
 
-        return $this->hasMany($attachmentRelatesModel);
+        return $this->morphToMany($attachmentModel, 'attachmentable', 'attachmentables', 'attachment_id')
+                    ->orWhereRaw('attachmentables.attachmentable_type IS NOT NULL');
     }
 
 }

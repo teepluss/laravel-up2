@@ -20,22 +20,6 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Attachment Relate Model
-    |--------------------------------------------------------------------------
-    |
-    | When using the "eloquent" driver, we need to know which
-    | Eloquent models should be used throughout Up.
-    |
-    */
-
-    'attachmentRelates' => array(
-
-        'model' => '\Teepluss\Up\AttachmentRelates\Eloquent\AttachmentRelate'
-
-    ),
-
-    /*
-    |--------------------------------------------------------------------------
     | Callback
     |--------------------------------------------------------------------------
     |

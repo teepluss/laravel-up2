@@ -122,7 +122,7 @@ class Up {
                 // Add to morph here.
                 if ($result['master'] == null and is_object($model))
                 {
-                    $model->files()->create(array('attachment_id' => $result['fileName']));
+                    $model->attachments()->attach($result['fileName']);
                 }
             }
         ), $this->inject);
@@ -145,9 +145,9 @@ class Up {
         if ( ! is_object($model)) return;
 
         // The model is not set up morph.
-        if ( ! method_exists($model, 'files'))
+        if ( ! method_exists($model, 'attachments'))
         {
-            throw new \Exception('The model is not morph with AttachmentRelate.');
+            throw new \Exception('The model is not morph with Attachment.');
         }
 
         // Using uploader to upload, then insert to db.
@@ -214,27 +214,25 @@ class Up {
             });
         }
 
-        // Get files.
-        $files = $sql->get();
+        // Get attachments.
+        $attachments = $sql->get();
 
-        //sd($files->toArray());
-
-        if (count($files)) foreach ($files as $file)
+        if (count($attachments)) foreach ($attachments as $attachment)
         {
             // Input is a name with extension, but don't need any path.
-            $input = $file->name;
+            $input = $attachment->name;
 
             // Subpath from db.
-            $subpath = trim($file->path, '/');
+            $subpath = trim($attachment->path, '/');
 
-            // Inject a config, then remove a file related.
+            // Inject a config, then remove a attachment related.
             $this->uploader->inject(array(
                 'subpath'  => $subpath,
-                'onRemove' => function($result) use ($file, &$results)
+                'onRemove' => function($result) use ($attachment, &$results)
                 {
-                    $file->delete(false);
+                    $attachment->delete(false);
 
-                    \Cache::forget('attachment-'.$file->getKey());
+                    \Cache::forget('attachment-'.$attachment->getKey());
 
                     array_push($results, $result);
                 }
