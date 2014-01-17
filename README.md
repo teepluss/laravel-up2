@@ -4,8 +4,8 @@ UP2 is a file uploader with polymorphic relations.
 
 ### Installation
 
-- [UP on Packagist](https://packagist.org/packages/teepluss/up2)
-- [UP on GitHub](https://github.com/teepluss/laravel4-up2)
+- [UP2 on Packagist](https://packagist.org/packages/teepluss/up2)
+- [UP2 on GitHub](https://github.com/teepluss/laravel4-up2)
 
 To get the lastest version of Theme simply require it in your `composer.json` file.
 
@@ -25,7 +25,7 @@ Once Theme is installed you need to register the service provider with the appli
 )
 ~~~
 
-UP also ships with a facade which provides the static syntax for creating collections. You can register the facade in the `aliases` key of your `app/config/app.php` file.
+UP2 also ships with a facade which provides the static syntax for creating collections. You can register the facade in the `aliases` key of your `app/config/app.php` file.
 
 ~~~
 'aliases' => array(
@@ -71,7 +71,7 @@ class Blog extends Eloquent {
 }
 ~~~
 
-### After create a method "attachments", Blog can use "UP" to upload files.
+### After create a method "attachments", Blog can use "UP2" to upload files.
 
 Upload file and resizing.
 
@@ -87,7 +87,7 @@ UP2::upload(Product::find(1), Input::file('userfile'))->resize()->getResults();
 UP2::upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getMasterResult();
 ~~~
 
-// UP can upload remote file.
+// UP2 can upload remote file.
 UP2::inject(array('remote' => true))->upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getResults();
 
 Look up a file path.
