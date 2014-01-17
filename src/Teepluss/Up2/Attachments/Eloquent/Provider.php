@@ -1,6 +1,6 @@
-<?php namespace Teepluss\Up\Attachments\Eloquent;
+<?php namespace Teepluss\Up2\Attachments\Eloquent;
 
-use Teepluss\Up\Attachments\ProviderInterface;
+use Teepluss\Up2\Attachments\ProviderInterface;
 
 class Provider implements ProviderInterface {
 
@@ -9,7 +9,7 @@ class Provider implements ProviderInterface {
      *
      * @var string
      */
-    protected $model = 'Teepluss\Up\Attachments\Eloquent\Attachment';
+    protected $model = 'Teepluss\Up2\Attachments\Eloquent\Attachment';
 
     /**
      * Constructor.

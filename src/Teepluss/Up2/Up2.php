@@ -1,13 +1,13 @@
-<?php namespace Teepluss\Up;
+<?php namespace Teepluss\Up2;
 
 use Closure;
 use Illuminate\Config\Repository;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Cache;
-use Teepluss\Up\Uploader as Uploader;
-use Teepluss\Up\Attachments\ProviderInterface as AttachmentProviderInterface;
+use Teepluss\Up2\Uploader as Uploader;
+use Teepluss\Up2\Attachments\ProviderInterface as AttachmentProviderInterface;
 
-class Up {
+class Up2 {
 
     /**
      * Config from main.
@@ -60,7 +60,7 @@ class Up {
      */
     public function __construct(Repository $config, AttachmentProviderInterface $attachmentProvider, Uploader $uploader)
     {
-        $this->config = $config->get('up::config');
+        $this->config = $config->get('up2::config');
 
         $this->attachmentProvider = $attachmentProvider;
 

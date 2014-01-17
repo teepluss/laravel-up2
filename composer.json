@@ -1,8 +1,8 @@
 {
-    "name": "teepluss/up",
-    "description": "UP is a file uploader with polymorphic relations.",
+    "name": "teepluss/up2",
+    "description": "UP2 is a file uploader with polymorphic relations.",
     "keywords": ["laravel", "laravel4", "upload", "resize"],
-    "homepage": "https://github.com/teepluss/laravel4-up",
+    "homepage": "https://github.com/teepluss/laravel4-up2",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -23,7 +23,7 @@
             "src/migrations"
         ],
         "psr-0": {
-            "Teepluss\\Up": "src/"
+            "Teepluss\\Up2": "src/"
         }
     },
     "minimum-stability": "dev"

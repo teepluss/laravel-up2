@@ -1,9 +1,9 @@
-<?php namespace Teepluss\Up;
+<?php namespace Teepluss\Up2;
 
 use Illuminate\Support\ServiceProvider;
-use Teepluss\Up\Attachments\Eloquent\Provider as AttachmentProvider;
+use Teepluss\Up2\Attachments\Eloquent\Provider as AttachmentProvider;
 
-class UpServiceProvider extends ServiceProvider {
+class Up2ServiceProvider extends ServiceProvider {
 
 	/**
 	 * Indicates if loading of the provider is deferred.
@@ -19,7 +19,7 @@ class UpServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('teepluss/up');
+		$this->package('teepluss/up2');
 	}
 
 	/**
@@ -31,7 +31,7 @@ class UpServiceProvider extends ServiceProvider {
 	{
 		$this->registerAttachmentProvider();
 		$this->registerUploader();
-		$this->registerUp();
+		$this->registerUp2();
 	}
 
 	/**
@@ -41,9 +41,9 @@ class UpServiceProvider extends ServiceProvider {
 	 */
 	protected function registerAttachmentProvider()
 	{
-		$this->app['up.attachment'] = $this->app->share(function($app)
+		$this->app['up2.attachment'] = $this->app->share(function($app)
 		{
-			$model = $app['config']->get('up::attachments.model');
+			$model = $app['config']->get('up2::attachments.model');
 
 			return new AttachmentProvider($model);
 		});
@@ -56,7 +56,7 @@ class UpServiceProvider extends ServiceProvider {
 	 */
 	public function registerUploader()
 	{
-		$this->app['up.uploader'] = $this->app->share(function($app)
+		$this->app['up2.uploader'] = $this->app->share(function($app)
 		{
 			return new Uploader($app['config'], $app['request'], $app['files']);
 		});
@@ -67,13 +67,13 @@ class UpServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	protected function registerUp()
+	protected function registerUp2()
 	{
-		$this->app['up'] = $this->app->share(function($app)
+		$this->app['up2'] = $this->app->share(function($app)
 		{
-			$app['up.loaded'] = true;
+			$app['up2.loaded'] = true;
 
-			return new Up($app['config'], $app['up.attachment'], $app['up.uploader']);
+			return new Up2($app['config'], $app['up2.attachment'], $app['up2.uploader']);
 		});
 	}
 
@@ -84,7 +84,7 @@ class UpServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('attach', 'up');
+		return array('attach', 'up2');
 	}
 
 }

@@ -1,16 +1,16 @@
-## UP 2 for Laravel 4
+## UP2 for Laravel 4
 
-UP is a file uploader with polymorphic relations.
+UP2 is a file uploader with polymorphic relations.
 
 ### Installation
 
-- [UP on Packagist](https://packagist.org/packages/teepluss/up)
-- [UP on GitHub](https://github.com/teepluss/laravel4-up)
+- [UP on Packagist](https://packagist.org/packages/teepluss/up2)
+- [UP on GitHub](https://github.com/teepluss/laravel4-up2)
 
 To get the lastest version of Theme simply require it in your `composer.json` file.
 
 ~~~
-"teepluss/up": "dev-master"
+"teepluss/up2": "dev-master"
 ~~~
 
 You'll then need to run `composer install` to download it and have the autoloader updated.
@@ -20,7 +20,7 @@ Once Theme is installed you need to register the service provider with the appli
 ~~~
 'providers' => array(
 
-    'Teepluss\Up\UpServiceProvider'
+    'Teepluss\Up2\Up2ServiceProvider'
 
 )
 ~~~
@@ -30,7 +30,7 @@ UP also ships with a facade which provides the static syntax for creating collec
 ~~~
 'aliases' => array(
 
-    'UP' => 'Teepluss\Up\Facades\Up'
+    'UP2' => 'Teepluss\Up2\Facades\Up2'
 
 )
 ~~~
@@ -38,18 +38,18 @@ UP also ships with a facade which provides the static syntax for creating collec
 Publish config using artisan CLI.
 
 ~~~
-php artisan config:publish teepluss/up
+php artisan config:publish teepluss/up2
 ~~~
 
 Migrate tables.
 
 ~~~
-php artisan migrate --package=teepluss/up
+php artisan migrate --package=teepluss/up2
 ~~~
 
 ## Usage
 
-First you have to create a morph method for your model that want to use "UP".
+First you have to create a morph method for your model that want to use "UP2".
 
 ~~~php
 class Blog extends Eloquent {
@@ -63,7 +63,9 @@ class Blog extends Eloquent {
      */
     public function attachments()
     {
-        return $this->morphToMany('\Teepluss\Up\Attachments\Eloquent\Attachment', 'attachmentable');
+        $model = Config::get('up2::attachments.model');
+
+        return $this->morphToMany('\Teepluss\Up2\Attachments\Eloquent\Attachment', 'attachmentable');
     }
 
 }
@@ -75,18 +77,18 @@ Upload file and resizing.
 
 ~~~php
 // Return an original file meta.
-UP::upload(Blog::find(1), Input::file('userfile'))->getMasterResult();
-UP::upload(User::find(1), Input::file('userfile'))->getMasterResult();
+UP2::upload(Blog::find(1), Input::file('userfile'))->getMasterResult();
+UP2::upload(User::find(1), Input::file('userfile'))->getMasterResult();
 
 // Return all results files uploaded including resized.
-UP::upload(Product::find(1), Input::file('userfile'))->resize()->getResults();
+UP2::upload(Product::find(1), Input::file('userfile'))->resize()->getResults();
 
 // If you have other fields in table attachments.
-UP::upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getMasterResult();
+UP2::upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getMasterResult();
 ~~~
 
 // UP can upload remote file.
-UP::inject(array('remote' => true))->upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getResults();
+UP2::inject(array('remote' => true))->upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getResults();
 
 Look up a file path.
 
@@ -97,11 +99,11 @@ foreach ($blogs as $blog)
 {
     foreach ($blog->attachments as $attachment)
     {
-        echo UP::lookup($attachment->id);
+        echo UP2::lookup($attachment->id);
 
         // or lookup with scale from config.
 
-        echo UP::lookup($attachment->id)->scale('l');
+        echo UP2::lookup($attachment->id)->scale('l');
     }
 }
 ~~~
@@ -112,10 +114,10 @@ Remove file(s) from storage.
 $attachmentId = 'b5540d7e6350589004e02e23feb3dc1f';
 
 // Remove a single file.
-UP::remove($attachmentId);
+UP2::remove($attachmentId);
 
 // Remove all files including resized.
-UP::remove($attachmentId, true);
+UP2::remove($attachmentId, true);
 ~~~
 
 ## Support or Contact

@@ -1,7 +1,7 @@
-<?php namespace Teepluss\Up\Attachments\Eloquent;
+<?php namespace Teepluss\Up2\Attachments\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
-use Teepluss\Up\Attachments\AttachmentInterface;
+use Teepluss\Up2\Attachments\AttachmentInterface;
 
 class Attachment extends Model implements AttachmentInterface {
 
@@ -62,11 +62,11 @@ class Attachment extends Model implements AttachmentInterface {
      */
     public function attachmentable()
     {
-        $attachmentModel = \Config::get('up::attachments.model');
+        $attachmentModel = \Config::get('up2::attachments.model');
 
         if ( ! $attachmentModel)
         {
-            $attachmentModel = '\Teepluss\Up\Attachments\Eloquent\Attachment';
+            $attachmentModel = '\Teepluss\Up2\Attachments\Eloquent\Attachment';
         }
 
         return $this->morphToMany($attachmentModel, 'attachmentable', 'attachmentables', 'attachment_id')

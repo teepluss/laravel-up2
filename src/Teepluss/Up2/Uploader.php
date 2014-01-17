@@ -1,4 +1,4 @@
-<?php namespace Teepluss\Up;
+<?php namespace Teepluss\Up2;
 
 use Closure;
 use WideImage\WideImage;
@@ -70,7 +70,7 @@ class Uploader {
     public function __construct(Repository $config, Request $request, Filesystem $files)
     {
         // Get config from file.
-        $this->config = $config->get('up::uploader');
+        $this->config = $config->get('up2::uploader');
 
         // Laravel request.
         $this->request = $request;

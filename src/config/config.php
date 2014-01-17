@@ -14,7 +14,7 @@ return array(
 
     'attachments' => array(
 
-        'model' => '\Teepluss\Up\Attachments\Eloquent\Attachment'
+        'model' => '\Teepluss\Up2\Attachments\Eloquent\Attachment'
 
     ),
 
