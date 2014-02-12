@@ -20,6 +20,7 @@ class CreateAttachmentsTable extends Migration {
 		    $table->string('master', 100)->nullable();
 		    $table->string('scale', 100)->nullable();
 		    $table->string('path', 255);
+		    //$table->string('orig_name', 255);
 		    $table->string('name', 100);
 		    $table->string('location', 255);
 		    $table->string('size', 100);
