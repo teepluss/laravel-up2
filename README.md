@@ -85,10 +85,10 @@ UP2::upload(Product::find(1), Input::file('userfile'))->resize()->getResults();
 
 // If you have other fields in table attachments.
 UP2::upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getMasterResult();
-~~~
 
 // UP2 can upload remote file.
 UP2::inject(array('remote' => true))->upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getResults();
+~~~
 
 Look up a file path.
 

@@ -284,8 +284,8 @@ class Uploader {
         curl_setopt ($ch, CURLOPT_HEADER, 0);
         curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt ($ch,CURLOPT_CONNECTTIMEOUT,120);
-        curl_setopt ($ch,CURLOPT_TIMEOUT,120);
+        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT,120);
+        curl_setopt ($ch, CURLOPT_TIMEOUT,120);
 
         // Response returned.
         $bin = curl_exec($ch);
@@ -408,7 +408,7 @@ class Uploader {
 
         // Get mime type.
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $location);
+        $mime  = finfo_file($finfo, $location);
 
         // Dimension for image.
         $dimension = null;
