@@ -3,6 +3,10 @@
 use Illuminate\Support\ServiceProvider;
 use Teepluss\Up2\Attachments\Eloquent\Provider as AttachmentProvider;
 
+use Imagine\Image\Box;
+use Imagine\Image\Point;
+
+
 class Up2ServiceProvider extends ServiceProvider {
 
 	/**
