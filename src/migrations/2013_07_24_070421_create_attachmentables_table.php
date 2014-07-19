@@ -36,7 +36,9 @@ class CreateAttachmentablesTable extends Migration {
      */
     public function down()
     {
-        Schema::dropForeign('attachmentables_attachment_id_foreign');
+        Schema::table('attachmentables', function($table) {
+            $table->dropForeign('attachmentables_attachment_id_foreign');
+        });
 
         Schema::dropIfExists('attachmentables');
     }
