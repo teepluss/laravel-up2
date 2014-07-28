@@ -275,9 +275,14 @@ class Uploader {
 
         // Original name.
         $origName = basename($url);
+        
+        // Strip query string by buagern.
+        $origName = preg_replace('/\?.*/', '', $origName);
 
         // Generate a file name with extension.
-        $filename = $this->name($url);
+        // $filename = $this->name($url);
+        // Fixed by buagern
+        $filename = $this->name($origName);
 
         // Get file binary.
         $ch = curl_init();
