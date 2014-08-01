@@ -51,6 +51,22 @@ php artisan migrate --package=teepluss/up2
 
 First you have to create a morph method for your model that want to use "UP2".
 
+Use trait
+
+~~~php
+use Teepluss\Up2\Up2Trait;
+
+class Blog extends Eloquent {
+
+    use Up2Trait;
+
+    public function .....
+
+}
+~~~
+
+Or simple morph
+
 ~~~php
 class Blog extends Eloquent {
 
@@ -67,20 +83,6 @@ class Blog extends Eloquent {
 
         return $this->morphToMany($attachmentsModel, 'attachmentable');
     }
-
-}
-~~~
-
-OR use trait.
-
-~~~php
-use Teepluss\Up2\Up2Trait;
-
-class Blog extends Eloquent {
-
-    use Up2Trait;
-
-    public function .....
 
 }
 ~~~
