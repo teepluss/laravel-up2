@@ -63,10 +63,24 @@ class Blog extends Eloquent {
      */
     public function attachments()
     {
-        $model = Config::get('up2::attachments.model');
+        $attachmentsModel = Config::get('up2::attachments.model');
 
-        return $this->morphToMany('\Teepluss\Up2\Attachments\Eloquent\Attachment', 'attachmentable');
+        return $this->morphToMany($attachmentsModel, 'attachmentable');
     }
+
+}
+~~~
+
+OR use trait.
+
+~~~php
+use Teepluss\Up2\Up2Trait;
+
+class Blog extends Eloquent {
+
+    use Up2Trait;
+
+    public function .....
 
 }
 ~~~
