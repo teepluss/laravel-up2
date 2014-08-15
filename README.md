@@ -65,7 +65,7 @@ class Blog extends Eloquent {
 }
 ~~~
 
-Or simple morph
+Or use classic morph.
 
 ~~~php
 class Blog extends Eloquent {
