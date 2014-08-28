@@ -202,6 +202,12 @@ class Up2 {
         // Prepare return.
         $results = array();
 
+        // No data to remove
+        if (empty($attachmentId))
+        {
+            return $result;
+        }
+
         // Find a master.
         $sql = $this->getAttachmentProvider()->createModel()->whereId($attachmentId);
 
