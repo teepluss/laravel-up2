@@ -73,10 +73,10 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Resize quality.
+    | Upload quality.
     |--------------------------------------------------------------------------
     |
-    | Options groups are currently supported : quality, resolution and flatten.
+    | Quality, resolution and flatten all uploaded.
     |
     */
 
