@@ -4,6 +4,8 @@ use Closure;
 use Imagine\Image\Box;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Point;
+use Imagine\Image\ImageInterface;
+
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Config\Repository;
@@ -246,12 +248,31 @@ class Uploader {
         $origName = $file->getClientOriginalName();
 
         // Generate a file name with extension.
-        $filename = $this->name($origName);
+        $fileName = $this->name($origName);
 
-        if ($file->move($path, $filename))
+
+        // if ($file->move($path, $fileName))
+        // {
+        //     $uploadPath = $path.$fileName;
+
+        //     return $this->results($uploadPath);
+        // }
+
+
+        // Use Imagine to make resize and crop.
+        $options = array(
+            'jpeg_quality'          => array_get($this->config, 'quality.jpeg', 90),
+            'png_compression_level' => array_get($this->config, 'quality.png', 90) / 10,
+        );
+
+        $imagine = new Imagine();
+        $image = $imagine->open($file);
+        $image->interlace(ImageInterface::INTERLACE_PLANE);
+
+        $uploadPath = $path.$fileName;
+
+        if ($image->save($uploadPath, $options))
         {
-            $uploadPath = $path.$filename;
-
             return $this->results($uploadPath);
         }
 
@@ -275,7 +296,7 @@ class Uploader {
 
         // Original name.
         $origName = basename($url);
-        
+
         // Strip query string by buagern.
         $origName = preg_replace('/\?.*/', '', $origName);
 
@@ -514,6 +535,7 @@ class Uploader {
                 $imagine = new Imagine();
                 $image = $imagine->open($master['location']);
                 $image->thumbnail(new Box($w, $h), 'outbound')
+                      ->interlace(ImageInterface::INTERLACE_PLANE)
                       ->save($uploadPath, $options);
 
                 // Add a result and fired.
