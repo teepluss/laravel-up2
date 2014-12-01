@@ -250,13 +250,21 @@ class Uploader {
         // Generate a file name with extension.
         $fileName = $this->name($origName);
 
-
         // if ($file->move($path, $fileName))
         // {
         //     $uploadPath = $path.$fileName;
 
         //     return $this->results($uploadPath);
         // }
+
+        // Fix for some system can't access tmp file by buagern@buataitom.com
+        if ( ! $file->move($path, $fileName))
+        {
+            return false;
+        }
+
+        $uploadedFile = $path.$fileName;
+        // End fixed
 
 
         // Use Imagine to make resize and crop.
@@ -266,7 +274,12 @@ class Uploader {
         );
 
         $imagine = new Imagine();
-        $image = $imagine->open($file);
+
+        // Fix for some system can't access tmp file by buagern@buataitom.com
+        // $image = $imagine->open($file);
+        $image = $imagine->open($uploadedFile);
+        // End fixed
+
         $image->interlace(ImageInterface::INTERLACE_PLANE);
 
         $uploadPath = $path.$fileName;
