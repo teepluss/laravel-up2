@@ -250,13 +250,6 @@ class Uploader {
         // Generate a file name with extension.
         $fileName = $this->name($origName);
 
-        // if ($file->move($path, $fileName))
-        // {
-        //     $uploadPath = $path.$fileName;
-
-        //     return $this->results($uploadPath);
-        // }
-
         // Fix for some system can't access tmp file by buagern@buataitom.com
         if ( ! $file->move($path, $fileName))
         {
@@ -266,8 +259,7 @@ class Uploader {
         $uploadedFile = $path.$fileName;
         // End fixed
 
-
-        // Use Imagine to make resize and crop.
+        // Use Imagine to reduce size and quality depend on config.
         $options = array(
             'jpeg_quality'          => array_get($this->config, 'quality.jpeg', 90),
             'png_compression_level' => array_get($this->config, 'quality.png', 90) / 10,
@@ -276,7 +268,6 @@ class Uploader {
         $imagine = new Imagine();
 
         // Fix for some system can't access tmp file by buagern@buataitom.com
-        // $image = $imagine->open($file);
         $image = $imagine->open($uploadedFile);
         // End fixed
 
@@ -531,13 +522,6 @@ class Uploader {
 
                 // Path with the name include scale and extension.
                 $uploadPath = $path.$master['fileName'].'_'.$size.'.'.$master['fileExtension'];
-
-                // Use WideImage to make resize and crop.
-                // WideImage::load($master['location'])
-                //     ->resize($w, $h, 'outside')
-                //     ->crop('center', 'middle', $w, $h)
-                //     ->saveToFile($uploadPath);
-
 
                 // Use Imagine to make resize and crop.
                 $options = array(
