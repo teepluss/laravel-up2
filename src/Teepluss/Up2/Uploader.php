@@ -251,11 +251,7 @@ class Uploader {
         $fileName = $this->name($origName);
 
         // Fix for some system can't access tmp file by buagern@buataitom.com
-        if ( ! $file->move($path, $fileName))
-        {
-            return false;
-        }
-
+        $file->move($path, $fileName);
         $uploadedFile = $path.$fileName;
         // End fixed
 
