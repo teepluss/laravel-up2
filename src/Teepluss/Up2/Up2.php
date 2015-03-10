@@ -5,7 +5,7 @@ use Exception;
 use Illuminate\Config\Repository;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Cache;
-use Teepluss\Up2\Uploader as Uploader;
+//use Teepluss\Up2\Uploader as Uploader;
 use Teepluss\Up2\Attachments\ProviderInterface as AttachmentProviderInterface;
 
 class Up2 {
@@ -59,7 +59,7 @@ class Up2 {
      * @param AttachmentProviderInterface $attachmentProvider
      * @param Uploader                    $uploader
      */
-    public function __construct(Repository $config, AttachmentProviderInterface $attachmentProvider, Uploader $uploader)
+    public function __construct(Repository $config, AttachmentProviderInterface $attachmentProvider, $uploader)
     {
         $this->config = $config->get('up2::config');
 
@@ -227,7 +227,7 @@ class Up2 {
         if (count($attachments)) foreach ($attachments as $attachment)
         {
             // Input is a name with extension, but don't need any path.
-            $input = $attachment->name;
+            //$input = $attachment->name;
 
             // Subpath from db.
             $subpath = trim($attachment->path, '/');
@@ -244,7 +244,7 @@ class Up2 {
                     array_push($results, $result);
                 }
             ))
-            ->open($input)->remove();
+            ->open($attachment->toArray())->remove();
         }
 
         return $results;
@@ -268,7 +268,7 @@ class Up2 {
             $config = array(
                 'subpath' => trim($master->path, '/')
             );
-            $this->uploadInit()->inject($config)->open($master->name)->resize($scale);
+            $this->uploadInit()->inject($config)->open($master->toArray())->resize($scale);
 
             $attachment = $this->getAttachmentProvider()->findById($master->id.'_'.$scale);
         }
@@ -338,7 +338,7 @@ class Up2 {
                 return $location;
             }
 
-            return $this->uploader->url($location);
+            sd( $this->uploader->url($location) );
         }
 
         $failure = array_get($this->config, 'placeholder');
@@ -360,6 +360,7 @@ class Up2 {
         catch (Exception $e)
         {
             restore_error_handler();
+
             trigger_error($e->getMessage());
         }
     }

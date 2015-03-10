@@ -62,7 +62,7 @@ class Up2ServiceProvider extends ServiceProvider {
 	{
 		$this->app['up2.uploader'] = $this->app->share(function($app)
 		{
-			return new Uploader($app['config'], $app['request'], $app['files']);
+			return new UploaderManager($app);
 		});
 	}
 
@@ -76,6 +76,10 @@ class Up2ServiceProvider extends ServiceProvider {
 		$this->app['up2'] = $this->app->share(function($app)
 		{
 			$app['up2.loaded'] = true;
+
+			//s(get_class_methods($app['up2.uploader']));
+
+			//sd($app['up2.uploader']->getDefaultDriver());
 
 			return new Up2($app['config'], $app['up2.attachment'], $app['up2.uploader']);
 		});
