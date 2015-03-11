@@ -30,8 +30,8 @@ return array(
         ),
 
         's3' => array(
-            'key'    => 'AKIAIGAYWWN45WRIYKUQ',
-            'secret' => '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',
+            'key'    => '[KEY]',
+            'secret' => '[SECRET]',
             'region' => 'ap-southeast-1',
             'bucket' => 'teeplus',
         ),

@@ -337,7 +337,7 @@ class Up2 {
                 return $location;
             }
 
-            sd( $this->uploader->url($location) );
+            return $this->uploader->url($location);
         }
 
         $failure = array_get($this->config, 'placeholder');
