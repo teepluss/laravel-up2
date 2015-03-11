@@ -52,6 +52,24 @@ php artisan migrate --package=teepluss/up2
 The uploader configuration is located at app/packages/teepluss/uploader.php.
 In this file you may specify which uploader driver you would like used by default throughout your application. UP2 supports Local and S3.
 
+~~~php
+'drivers' => array(
+
+    'local' => array(
+        'baseUrl' => URL::to(''),
+        'baseDir' => App::make('path.public'),
+    ),
+
+    's3' => array(
+        'key'    => '',
+        'secret' => '',
+        'region' => 'ap-southeast-1',
+        'bucket' => 'teeplus',
+    ),
+
+),
+~~~
+
 Then you have to create a morph method for your model that want to use "UP2".
 
 ~~~php
@@ -83,6 +101,18 @@ UP2::upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->ge
 
 // UP2 can upload remote file.
 UP2::inject(array('remote' => true))->upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getResults();
+~~~
+
+Upload without model.
+
+~~~php
+UP2::upload(null, Input::file('userfile'))->getMasterResult();
+~~~
+
+Inject configuration.
+
+~~~php
+UP2::inject(array('subpath' => 'uploads/products'))->upload(Blog::find(1), Input::file('userfile'))->getMasterResult();
 ~~~
 
 Look up a file path.

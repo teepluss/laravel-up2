@@ -30,8 +30,8 @@ return array(
         ),
 
         's3' => array(
-            'key'    => '[KEY]',
-            'secret' => '[SECRET]',
+            'key'    => '',
+            'secret' => '',
             'region' => 'ap-southeast-1',
             'bucket' => 'teeplus',
         ),

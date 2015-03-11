@@ -142,12 +142,13 @@ class Up2 {
      */
     public function upload($model, $input, $addition = array())
     {
-        if ( ! is_object($model)) return;
-
-        // The model is not set up morph.
-        if ( ! method_exists($model, 'attachments'))
+        if (is_object($model))
         {
-            throw new \Exception('The model is not morph with Attachment.');
+            // The model is not set up morph.
+            if ( ! method_exists($model, 'attachments'))
+            {
+                throw new \Exception('The model is not morph with Attachment.');
+            }
         }
 
         // Using uploader to upload, then insert to db.
