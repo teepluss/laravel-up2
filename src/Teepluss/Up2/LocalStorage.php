@@ -18,10 +18,6 @@ class LocalStorage extends StoreAbstract implements StoreInterface {
      */
     public function open($name)
     {
-        //$name = $node['name'];
-
-        //$location = $this->path($this->config['baseDir']).$name;
-
         $location = $node['location'];
 
         // Generate a result to use as a master file.

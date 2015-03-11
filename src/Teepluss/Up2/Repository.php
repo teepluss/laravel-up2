@@ -12,16 +12,16 @@ class Repository {
     }
 
     /**
-     * The cache store implementation.
+     * The uploader store implementation.
      *
-     * @var \Illuminate\Cache\StoreInterface
+     * @var \Teepluss\Up2\StoreInterface
      */
     protected $store;
 
     /**
-     * Create a new cache repository instance.
+     * Create a new uploader repository instance.
      *
-     * @param  \Illuminate\Cache\StoreInterface  $store
+     * @param  \Teepluss\Up2\StoreInterface  $store
      */
     public function __construct(StoreInterface $store)
     {
@@ -29,9 +29,9 @@ class Repository {
     }
 
     /**
-     * Get the cache store implementation.
+     * Get the uploader store implementation.
      *
-     * @return \Illuminate\Cache\StoreInterface
+     * @return \Teepluss\Up2\StoreInterface
      */
     public function getStore()
     {

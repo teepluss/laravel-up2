@@ -7,9 +7,9 @@ use Teepluss\Up2\StoreInterface;
 class UploaderManager extends Manager {
 
     /**
-     * Create an instance of the file cache driver.
+     * Create an instance of the local storage driver.
      *
-     * @return \Illuminate\Cache\FileStore
+     * @return \Teepluss\Up2\LocalStorage
      */
     protected function createLocalDriver()
     {
@@ -22,9 +22,9 @@ class UploaderManager extends Manager {
     }
 
     /**
-     * Create an instance of the file cache driver.
+     * Create an instance of the S3 storage driver.
      *
-     * @return \Illuminate\Cache\FileStore
+     * @return \Teepluss\Up2\S3Storage
      */
     protected function createS3Driver()
     {
@@ -39,8 +39,8 @@ class UploaderManager extends Manager {
     /**
      * Create a new cache repository with the given implementation.
      *
-     * @param  \Illuminate\Cache\StoreInterface  $store
-     * @return \Illuminate\Cache\Repository
+     * @param  \Teepluss\Up2\StoreInterface  $store
+     * @return \Teepluss\Up2\Repository
      */
     protected function repository(StoreInterface $store)
     {

@@ -49,9 +49,10 @@ php artisan migrate --package=teepluss/up2
 
 ## Usage
 
-First you have to create a morph method for your model that want to use "UP2".
+The uploader configuration is located at app/packages/teepluss/uploader.php.
+In this file you may specify which uploader driver you would like used by default throughout your application. UP2 supports Local and S3.
 
-Use trait
+Then you have to create a morph method for your model that want to use "UP2".
 
 ~~~php
 use Teepluss\Up2\Up2Trait;
@@ -65,29 +66,7 @@ class Blog extends Eloquent {
 }
 ~~~
 
-Or use classic morph.
-
-~~~php
-class Blog extends Eloquent {
-
-    public function .....
-
-    /**
-     * Blog has many files upload.
-     *
-     * @return Attachment
-     */
-    public function attachments()
-    {
-        $attachmentsModel = Config::get('up2::attachments.model');
-
-        return $this->morphToMany($attachmentsModel, 'attachmentable');
-    }
-
-}
-~~~
-
-### After create a method "attachments", Blog can use "UP2" to upload files.
+### Now you able to use "UP2" for uploading file.
 
 Upload file and resizing.
 
@@ -139,6 +118,5 @@ UP2::remove($attachmentId, true);
 ## Support or Contact
 
 If you have some problem, Please contact teepluss@gmail.com
-
 
 [![Support via PayPal](https://rawgithub.com/chris---/Donation-Badges/master/paypal.jpeg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9GEC8J7FAG6JA)
