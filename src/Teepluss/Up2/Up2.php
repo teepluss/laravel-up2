@@ -5,7 +5,6 @@ use Exception;
 use Illuminate\Config\Repository;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Cache;
-//use Teepluss\Up2\Uploader as Uploader;
 use Teepluss\Up2\Attachments\ProviderInterface as AttachmentProviderInterface;
 
 class Up2 {

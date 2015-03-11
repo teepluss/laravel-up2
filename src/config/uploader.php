@@ -4,7 +4,7 @@ return array(
 
     /*
     |--------------------------------------------------------------------------
-    | Uploader driver.
+    | Uploader driver
     |--------------------------------------------------------------------------
     |
     | Support local, s3
@@ -13,44 +13,28 @@ return array(
 
     'default' => 's3',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Driver config
+    |--------------------------------------------------------------------------
+    |
+    | Here are each of the storage setup for your application.
+    |
+    */
+
     'drivers' => array(
 
         'local' => array(
-
-            /*
-            |--------------------------------------------------------------------------
-            | Base path (support only local driver)
-            |--------------------------------------------------------------------------
-            |
-            | Full path to view your image
-            | http://...image.jpg
-            |
-            |
-            */
-
             'baseUrl' => \URL::to(''),
-
-            /*
-            |--------------------------------------------------------------------------
-            | Base storage dir (support only local driver)
-            |--------------------------------------------------------------------------
-            |
-            | Base directory to store uploaded files.
-            |
-            */
-
             'baseDir' => \App::make('path.public'),
-
         ),
 
         's3' => array(
-
             'key'    => 'AKIAIGAYWWN45WRIYKUQ',
             'secret' => '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',
             'region' => 'ap-southeast-1',
             'bucket' => 'teeplus',
-
-        )
+        ),
 
     ),
 
