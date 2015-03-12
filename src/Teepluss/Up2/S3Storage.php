@@ -96,6 +96,24 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         // Method to upload.
         $method = 'doUpload';
 
+        switch ($this->config['type'])
+        {
+            case 'base64' : $method = 'doBase64'; break;
+            case 'remote' : $method = 'doTransfer'; break;
+            case 'detect' :
+
+                if (preg_match('|^http(s)?|', $this->file))
+                {
+                    $method = 'doTransfer';
+                }
+                elseif (preg_match('|^data:|', $this->file))
+                {
+                    $method = 'doBase64';
+                }
+
+                break;
+        }
+
         // Call a method.
         $result = call_user_func_array(array($this, $method), array($this->file, $path));
 
@@ -153,6 +171,86 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         if ($this->filesystem->put($uploadPath, $content))
         {
             return $this->results($uploadPath);
+        }
+
+        return false;
+    }
+
+    /**
+     * Upload from a remote URL.
+     *
+     * @param   string  $file
+     * @param   string  $path
+     * @return  mixed
+     */
+    public function doTransfer($url, $path)
+    {
+        // Original name.
+        $origName = basename($url);
+
+        // Strip query string by buagern.
+        $origName = preg_replace('/\?.*/', '', $origName);
+
+        // Generate a file name with extension.
+        // $filename = $this->name($url);
+        // Fixed by buagern
+        $filename = $this->name($origName);
+
+        // Get file binary.
+        $ch = curl_init();
+
+        curl_setopt ($ch, CURLOPT_URL, $url);
+        curl_setopt ($ch, CURLOPT_HEADER, 0);
+        curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT,120);
+        curl_setopt ($ch, CURLOPT_TIMEOUT,120);
+
+        // Response returned.
+        $content = curl_exec($ch);
+
+        curl_close($ch);
+
+        // Path to write file.
+        $uploadPath = $path.$filename;
+
+        if ($this->filesystem->put($uploadPath, $content))
+        {
+            return $this->results($uploadPath);
+        }
+
+        return false;
+    }
+
+    /**
+     * Upload from base64 image.
+     *
+     * @param  string $base64
+     * @param  string $path
+     * @return mixed
+     */
+    public function doBase64($base64, $path)
+    {
+        $base64 = trim($base64);
+
+        // Check pattern.
+        if (preg_match('|^data:image\/(.*?);base64\,(.*)|', $base64, $matches))
+        {
+            $content = base64_decode($matches[2]);
+
+            $extension = $matches[1];
+
+            $origName = 'base64-'.time().'.'.$extension;
+
+            $filename = $this->name($origName);
+
+            // Path to write file.
+            $uploadPath = $path.$filename;
+
+            if ($this->filesystem->put($uploadPath, $content))
+            {
+                return $this->results($uploadPath);
+            }
         }
 
         return false;

@@ -40,6 +40,53 @@ class LocalStorage extends StoreAbstract implements StoreInterface {
     }
 
     /**
+     * Uplaod a file to destination.
+     *
+     * @return Attach
+     */
+    public function upload()
+    {
+        // Find a base directory include appended.
+        $path = $this->path($this->config['baseDir']);
+
+        // Method to upload.
+        $method = 'doUpload';
+
+        switch ($this->config['type'])
+        {
+            case 'base64' : $method = 'doBase64'; break;
+            case 'remote' : $method = 'doTransfer'; break;
+            case 'detect' :
+
+                if (preg_match('|^http(s)?|', $this->file))
+                {
+                    $method = 'doTransfer';
+                }
+                elseif (preg_match('|^data:|', $this->file))
+                {
+                    $method = 'doBase64';
+                }
+
+                break;
+        }
+
+        // Call a method.
+        $result = call_user_func_array(array($this, $method), array($this->file, $path));
+
+        // If uploaded set a master add fire a result.
+        if ($result !== false)
+        {
+            $this->master = $result;
+            $this->addResult($result);
+        }
+
+        // Reset values.
+        $this->reset();
+
+        return $this;
+    }
+
+    /**
      * Upload from a file input.
      *
      * @param   SplFileInfo  $file
