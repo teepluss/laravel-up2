@@ -78,7 +78,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
      */
     public function url($path)
     {
-        $protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
+        $protocol = $this->request->secure() ? 'https://' : 'http://';
 
         return "{$protocol}{$this->config['bucket']}.s3-{$this->config['region']}.amazonaws.com{$path}";
     }
