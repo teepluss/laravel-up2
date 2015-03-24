@@ -434,7 +434,10 @@ class S3Storage extends StoreAbstract implements StoreInterface {
 
             try
             {
-                $this->filesystem->delete($location);
+                if ($this->filesystem->has($location))
+                {
+                    $this->filesystem->delete($location);
+                }
             }
             catch (FileNotFoundException $e)
             {
