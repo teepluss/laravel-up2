@@ -1,11 +1,13 @@
-## UP2 for Laravel 4
+## Uploader Manager for Laravel
+
+### For Laravel 4, please use the [v1.x branch](https://github.com/teepluss/laravel-up2/tree/v1.x)!
 
 UP2 is a file uploader with polymorphic relations.
 
 ### Installation
 
 - [UP2 on Packagist](https://packagist.org/packages/teepluss/up2)
-- [UP2 on GitHub](https://github.com/teepluss/laravel4-up2)
+- [UP2 on GitHub](https://github.com/teepluss/laravel-up2)
 
 To get the lastest version of Theme simply require it in your `composer.json` file.
 
@@ -18,21 +20,21 @@ You'll then need to run `composer install` to download it and have the autoloade
 Once Theme is installed you need to register the service provider with the application. Open up `app/config/app.php` and find the `providers` key.
 
 ~~~
-'providers' => array(
+'providers' => [
 
-    'Teepluss\Up2\Up2ServiceProvider'
+    Teepluss\Up2\Up2ServiceProvider::class
 
-)
+]
 ~~~
 
 UP2 also ships with a facade which provides the static syntax for creating collections. You can register the facade in the `aliases` key of your `app/config/app.php` file.
 
 ~~~
-'aliases' => array(
+'aliases' => [
 
-    'UP2' => 'Teepluss\Up2\Facades\Up2'
+    'UP2' => Teepluss\Up2\Facades\Up2::class
 
-)
+]
 ~~~
 
 Publish config using artisan CLI.
@@ -44,20 +46,20 @@ php artisan config:publish teepluss/up2
 Migrate tables.
 
 ~~~
-php artisan migrate --package=teepluss/up2
+php artisan vendor:publish --provider="Teepluss\Up2\Up2ServiceProvider"
 ~~~
 
 ## Usage
 
-The uploader configuration is located at app/packages/teepluss/uploader.php.
+The uploader configuration is located at app/config/up2.php.
 In this file you may specify which uploader driver you would like used by default throughout your application. UP2 supports Local and S3.
 
 ~~~php
 'drivers' => array(
 
     'local' => array(
-        'baseUrl' => URL::to(''),
-        'baseDir' => App::make('path.public'),
+        'baseUrl' => url(''),
+        'baseDir' => path_public(),
     ),
 
     's3' => array(
@@ -74,8 +76,9 @@ Then you have to create a morph method for your model that want to use "UP2".
 
 ~~~php
 use Teepluss\Up2\Up2Trait;
+use Illuminate\Database\Eloquent\Model;
 
-class Blog extends Eloquent {
+class Blog extends Model {
 
     use Up2Trait;
 
@@ -127,7 +130,6 @@ foreach ($blogs as $blog)
         echo UP2::lookup($attachment->id);
 
         // or lookup with scale from config.
-
         echo UP2::lookup($attachment->id)->scale('l');
     }
 }
