@@ -1,13 +1,15 @@
-<?php namespace Teepluss\Up2;
+<?php 
+
+namespace Teepluss\Up2;
 
 use Closure;
 use Carbon\Carbon;
 use Teepluss\Up2\StoreInterface;
-use Illuminate\Support\Traits\MacroableTrait;
+use Illuminate\Support\Traits\Macroable;
 
-class Repository {
-
-    use MacroableTrait {
+class Repository 
+{
+    use Macroable {
         __call as macroCall;
     }
 
@@ -23,7 +25,7 @@ class Repository {
      *
      * @param  \Teepluss\Up2\StoreInterface  $store
      */
-    public function __construct(StoreInterface $store)
+    public function __construct(StoreInterface $store) 
     {
         $this->store = $store;
     }
@@ -47,12 +49,11 @@ class Repository {
      */
     public function __call($method, $parameters)
     {
-        if (static::hasMacro($method))
-        {
+        if (static::hasMacro($method)) {
             return $this->macroCall($method, $parameters);
         }
 
-        return call_user_func_array(array($this->store, $method), $parameters);
+        return call_user_func_array([$this->store, $method], $parameters);
     }
 
 }

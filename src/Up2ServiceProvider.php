@@ -39,6 +39,11 @@ class Up2ServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $configPath = __DIR__.'/../config/config.php';
+
+        // Merge config from vendor, override by user config.
+        $this->mergeConfigFrom($configPath, 'up2');
+
         $this->registerAttachmentProvider();
         $this->registerUploader();
         $this->registerUp2();
@@ -51,10 +56,8 @@ class Up2ServiceProvider extends ServiceProvider
      */
     protected function registerAttachmentProvider()
     {
-        $this->app['up2.attachment'] = $this->app->share(function($app)
-        {
-            $model = $app['config']->get('up2::attachments.model');
-
+        $this->app['up2.attachment'] = $this->app->share(function($app) {
+            $model = $app['config']->get('up2.config.attachments.model');
             return new AttachmentProvider($model);
         });
     }
@@ -66,8 +69,7 @@ class Up2ServiceProvider extends ServiceProvider
      */
     public function registerUploader()
     {
-        $this->app['up2.uploader'] = $this->app->share(function($app)
-        {
+        $this->app['up2.uploader'] = $this->app->share(function($app) {
             return new UploaderManager($app);
         });
     }
@@ -79,14 +81,8 @@ class Up2ServiceProvider extends ServiceProvider
      */
     protected function registerUp2()
     {
-        $this->app['up2'] = $this->app->share(function($app)
-        {
+        $this->app['up2'] = $this->app->share(function($app) {
             $app['up2.loaded'] = true;
-
-            //s(get_class_methods($app['up2.uploader']));
-
-            //sd($app['up2.uploader']->getDefaultDriver());
-
             return new Up2($app['config'], $app['up2.attachment'], $app['up2.uploader']);
         });
     }

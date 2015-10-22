@@ -1,5 +1,8 @@
-<?php namespace Teepluss\Up2\Attachments;
+<?php 
 
-interface ProviderInterface {
+namespace Teepluss\Up2\Attachments;
 
+interface ProviderInterface 
+{
+	//
 }

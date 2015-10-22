@@ -1,11 +1,13 @@
-<?php namespace Teepluss\Up2;
+<?php 
+
+namespace Teepluss\Up2;
 
 use Closure;
 use Illuminate\Support\Manager;
 use Teepluss\Up2\StoreInterface;
 
-class UploaderManager extends Manager {
-
+class UploaderManager extends Manager 
+{
     /**
      * Create an instance of the local storage driver.
      *
@@ -13,7 +15,7 @@ class UploaderManager extends Manager {
      */
     protected function createLocalDriver()
     {
-        $config = $this->app['config']['up2::uploader'];
+        $config = $this->app['config']['up2.uploader'];
 
         $config = array_merge($config, $config['drivers']['local']);
         unset($config['drivers']);
@@ -28,7 +30,7 @@ class UploaderManager extends Manager {
      */
     protected function createS3Driver()
     {
-        $config = $this->app['config']['up2::uploader'];
+        $config = $this->app['config']['up2.uploader'];
 
         $config = array_merge($config, $config['drivers']['s3']);
         unset($config['drivers']);
@@ -54,7 +56,7 @@ class UploaderManager extends Manager {
      */
     public function getDefaultDriver()
     {
-        return $this->app['config']['up2::uploader.default'];
+        return $this->app['config']['up2.uploader.default'];
     }
 
     /**
@@ -65,7 +67,7 @@ class UploaderManager extends Manager {
      */
     public function setDefaultDriver($name)
     {
-        $this->app['config']['up2::uploader.default'] = $name;
+        $this->app['config']['up2.uploader.default'] = $name;
     }
 
 }

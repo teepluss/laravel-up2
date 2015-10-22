@@ -1,4 +1,6 @@
-<?php namespace Teepluss\Up2;
+<?php 
+
+namespace Teepluss\Up2;
 
 use Closure;
 use Imagine\Image\Box;
@@ -13,10 +15,20 @@ use Illuminate\Http\Request;
 use Illuminate\Filesystem\Filesystem;
 
 
-class S3Storage extends StoreAbstract implements StoreInterface {
-
+class S3Storage extends StoreAbstract implements StoreInterface 
+{
+    /**
+     * S3 Storage Client
+     * 
+     * @var object
+     */
     protected $client;
 
+    /**
+     * S3 Filesystem
+     * 
+     * @var object
+     */
     protected $filesystem;
 
     /**
@@ -67,7 +79,9 @@ class S3Storage extends StoreAbstract implements StoreInterface {
      */
     public function requestUrl($path)
     {
-        return $this->filesystem->getAdapter()->getClient()->getObjectUrl($this->config['bucket'], $path);
+        return $this->filesystem->getAdapter()
+                ->getClient()
+                ->getObjectUrl($this->config['bucket'], $path);
     }
 
     /**
@@ -96,21 +110,15 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         // Method to upload.
         $method = 'doUpload';
 
-        switch ($this->config['type'])
-        {
+        switch ($this->config['type']) {
             case 'base64' : $method = 'doBase64'; break;
             case 'remote' : $method = 'doTransfer'; break;
             case 'detect' :
-
-                if (preg_match('|^http(s)?|', $this->file))
-                {
+                if (preg_match('|^http(s)?|', $this->file)) {
                     $method = 'doTransfer';
-                }
-                elseif (preg_match('|^data:|', $this->file))
-                {
+                } elseif (preg_match('|^data:|', $this->file)) {
                     $method = 'doBase64';
                 }
-
                 break;
         }
 
@@ -118,8 +126,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         $result = call_user_func_array(array($this, $method), array($this->file, $path));
 
         // If uploaded set a master add fire a result.
-        if ($result !== false)
-        {
+        if ($result !== false) {
             $this->master = $result;
             $this->addResult($result);
         }
@@ -139,8 +146,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
      */
     public function doUpload($file, $path)
     {
-        if ( ! $file instanceof \SplFileInfo)
-        {
+        if (! $file instanceof \SplFileInfo) {
             $file = $this->request->file($file);
         }
 
@@ -168,8 +174,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
 
         $content = $image->get($extension, $options);
 
-        if ($this->filesystem->put($uploadPath, $content))
-        {
+        if ($this->filesystem->put($uploadPath, $content)) {
             return $this->results($uploadPath);
         }
 
@@ -214,8 +219,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         // Path to write file.
         $uploadPath = $path.$filename;
 
-        if ($this->filesystem->put($uploadPath, $content))
-        {
+        if ($this->filesystem->put($uploadPath, $content)) {
             return $this->results($uploadPath);
         }
 
@@ -234,21 +238,16 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         $base64 = trim($base64);
 
         // Check pattern.
-        if (preg_match('|^data:image\/(.*?);base64\,(.*)|', $base64, $matches))
-        {
+        if (preg_match('|^data:image\/(.*?);base64\,(.*)|', $base64, $matches)) {
             $content = base64_decode($matches[2]);
-
             $extension = $matches[1];
-
             $origName = 'base64-'.time().'.'.$extension;
-
             $filename = $this->name($origName);
 
             // Path to write file.
             $uploadPath = $path.$filename;
 
-            if ($this->filesystem->put($uploadPath, $content))
-            {
+            if ($this->filesystem->put($uploadPath, $content)) {
                 return $this->results($uploadPath);
             }
         }
@@ -266,8 +265,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
     public function results($location, $scale = null)
     {
         // Scale of original file.
-        if (is_null($scale))
-        {
+        if (is_null($scale)) {
             $scale = 'original';
         }
 
@@ -275,12 +273,9 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         $isImage = false;
 
         // Get pathinfo.
-        try
-        {
+        try {
             $metadata = $this->filesystem->getMetadata($location);
-        }
-        catch (FileNotFoundException $e)
-        {
+        } catch (FileNotFoundException $e) {
             return false;
         }
 
@@ -306,8 +301,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         // Get mime type.
         $mime  = $metadata['mimetype'];
 
-        if (preg_match('/image/', $mime))
-        {
+        if (preg_match('/image/', $mime)) {
             $isImage = true;
         }
 
@@ -317,8 +311,7 @@ class S3Storage extends StoreAbstract implements StoreInterface {
         // Master of resized file.
         $master = null;
 
-        if ($scale !== 'original')
-        {
+        if ($scale !== 'original') {
             $master = str_replace('_'.$scale, '', $fileName);
         }
 
@@ -352,12 +345,10 @@ class S3Storage extends StoreAbstract implements StoreInterface {
 
 
         // Master image valid.
-        if ( ! is_null($master) and preg_match('|image|', $master['mime']))
-        {
+        if (! is_null($master) and preg_match('|image|', $master['mime'])) {
             $imageUrl = $this->requestUrl($master['location']);
 
-            if ( ! $imageUrl)
-            {
+            if (! $imageUrl) {
                 return false;
             }
 
@@ -371,21 +362,18 @@ class S3Storage extends StoreAbstract implements StoreInterface {
             $scales = $this->config['scales'];
 
             // If empty mean generate all sizes from config.
-            if (empty($sizes))
-            {
+            if (empty($sizes)) {
                 $sizes = array_keys($scales);
             }
 
             // If string mean generate one size only.
-            if (is_string($sizes))
-            {
+            if (is_string($sizes)) {
                 $sizes = (array) $sizes;
             }
 
-            if (count($sizes)) foreach ($sizes as $size)
-            {
+            if (count($sizes)) foreach ($sizes as $size) {
                 // Scale is not in config.
-                if ( ! array_key_exists($size, $scales)) continue;
+                if (! array_key_exists($size, $scales)) continue;
 
                 // Get width and height.
                 list($w, $h) = $scales[$size];
@@ -428,27 +416,21 @@ class S3Storage extends StoreAbstract implements StoreInterface {
 
         $stacks = array();
 
-        if ( ! is_null($master))
-        {
+        if (! is_null($master)) {
             $location = $master['location'];
 
-            try
-            {
-                if ($this->filesystem->has($location))
-                {
+            try {
+                if ($this->filesystem->has($location)) {
                     $this->filesystem->delete($location);
                 }
-            }
-            catch (FileNotFoundException $e)
-            {
+            } catch (FileNotFoundException $e) {
                 // File not found on S3.
             }
 
             // Fire a result to callback.
             $onRemove = $this->config['onRemove'];
 
-            if ($onRemove instanceof Closure)
-            {
+            if ($onRemove instanceof Closure) {
                 $onRemove($master);
             }
         }

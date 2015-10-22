@@ -1,4 +1,6 @@
-<?php namespace Teepluss\Up2;
+<?php 
+
+namespace Teepluss\Up2;
 
 interface StoreInterface {
 
@@ -34,7 +36,7 @@ interface StoreInterface {
      * @param   string  $scale
      * @return  array
      */
-    public function results($location, $scale = null);
+    //public function results($location, $scale = null);
 
     /**
      * Resize master image file.

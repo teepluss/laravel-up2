@@ -3,8 +3,8 @@
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ScopeInterface;
 
-class Up2Scope implements ScopeInterface {
-
+class Up2Scope implements ScopeInterface 
+{
     /**
      * Apply the scope to a given Eloquent query builder.
      *

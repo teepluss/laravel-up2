@@ -1,4 +1,6 @@
-<?php namespace Teepluss\Up2;
+<?php 
+
+namespace Teepluss\Up2;
 
 use Closure;
 use Exception;
@@ -7,7 +9,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Cache;
 use Teepluss\Up2\Attachments\ProviderInterface as AttachmentProviderInterface;
 
-class Up2 {
+class Up2 
+{
 
     /**
      * Config from main.
@@ -60,7 +63,7 @@ class Up2 {
      */
     public function __construct(Repository $config, AttachmentProviderInterface $attachmentProvider, $uploader)
     {
-        $this->config = $config->get('up2::config');
+        $this->config = $config->get('up2.config');
 
         $this->attachmentProvider = $attachmentProvider;
 
@@ -101,8 +104,7 @@ class Up2 {
         $attachmentProvider = $this->getAttachmentProvider();
 
         $config = array_merge(array(
-            'onUpload' => function($result) use ($attachmentProvider, $model, $addition)
-            {
+            'onUpload' => function($result) use ($attachmentProvider, $model, $addition) {
                 $data = array(
                     'id'        => $result['fileName'],
                     'master'    => $result['master'],
@@ -120,8 +122,7 @@ class Up2 {
                 $attachmentProvider->create($data);
 
                 // Add to morph here.
-                if ($result['master'] == null and is_object($model))
-                {
+                if ($result['master'] == null and is_object($model)) {
                     $model->attachments()->attach($result['fileName']);
                 }
             }
@@ -142,11 +143,9 @@ class Up2 {
      */
     public function upload($model, $input, $addition = array())
     {
-        if (is_object($model))
-        {
+        if (is_object($model)) {
             // The model is not set up morph.
-            if ( ! method_exists($model, 'attachments'))
-            {
+            if (! method_exists($model, 'attachments')) {
                 throw new \Exception('The model is not morph with Attachment.');
             }
         }
@@ -204,8 +203,7 @@ class Up2 {
         $results = array();
 
         // No data to remove
-        if (empty($attachmentId))
-        {
+        if (empty($attachmentId)) {
             return array();
         }
 
@@ -213,10 +211,8 @@ class Up2 {
         $sql = $this->getAttachmentProvider()->createModel()->whereId($attachmentId);
 
         // If recursive find related.
-        if ($recursive == true)
-        {
-            $sql = $sql->orWhere(function($query) use ($attachmentId)
-            {
+        if ($recursive == true) {
+            $sql = $sql->orWhere(function($query) use ($attachmentId) {
                 $query->whereMaster($attachmentId);
             });
         }
@@ -224,23 +220,16 @@ class Up2 {
         // Get attachments.
         $attachments = $sql->get();
 
-        if (count($attachments)) foreach ($attachments as $attachment)
-        {
-            // Input is a name with extension, but don't need any path.
-            //$input = $attachment->name;
-
+        if (count($attachments)) foreach ($attachments as $attachment) {
             // Subpath from db.
             $subpath = trim($attachment->path, '/');
 
             // Inject a config, then remove a attachment related.
             $this->uploader->inject(array(
                 'subpath'  => $subpath,
-                'onRemove' => function($result) use ($attachment, &$results)
-                {
+                'onRemove' => function($result) use ($attachment, &$results) {
                     $attachment->delete(false);
-
-                    \Cache::forget('attachment-'.$attachment->getKey());
-
+                    Cache::forget('attachment-'.$attachment->getKey());
                     array_push($results, $result);
                 }
             ))
@@ -260,16 +249,13 @@ class Up2 {
     public function resizeFromMasterFile($masterId, $scale)
     {
         $master = $this->getAttachmentProvider()->findById($masterId);
-
         $attachment = null;
-
-        if ( ! empty($master) and $scale)
-        {
+        if (! empty($master) and $scale) {
             $config = array(
                 'subpath' => trim($master->path, '/')
             );
-            $this->uploadInit()->inject($config)->open($master->toArray())->resize($scale);
 
+            $this->uploadInit()->inject($config)->open($master->toArray())->resize($scale);
             $attachment = $this->getAttachmentProvider()->findById($master->id.'_'.$scale);
         }
 
@@ -314,27 +300,22 @@ class Up2 {
         // Using cache to reduce request.
         $ckey = 'attachment-'.$this->attachmentId;
 
-        if ( ! $attachment = Cache::get($ckey))
-        {
+        if (! $attachment = Cache::get($ckey)) {
             $attachment = $that->getAttachmentProvider()->findById($that->attachmentId);
-
             Cache::put($ckey, $attachment, 60);
         }
 
         // Having scale, but not generate yet!
-        if ( ! is_object($attachment) and strpos($this->attachmentId, '_'))
-        {
+        if (! is_object($attachment) and strpos($this->attachmentId, '_')) {
             preg_match('|(.*)_(.*)|', $this->attachmentId, $matches);
 
             $attachment = $this->resizeFromMasterFile($matches[1], $matches[2]);
         }
 
-        if (is_object($attachment))
-        {
+        if (is_object($attachment)) {
             $location = $attachment->getAttribute('location');
 
-            if (preg_match('/^http/', $location))
-            {
+            if (preg_match('/^http/', $location)) {
                 return $location;
             }
 
@@ -353,14 +334,10 @@ class Up2 {
      */
     public function __toString()
     {
-        try
-        {
+        try {
             return $this->get() ?: '';
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             restore_error_handler();
-
             trigger_error($e->getMessage());
         }
     }

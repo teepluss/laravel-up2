@@ -5,7 +5,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Filesystem\Filesystem;
 
-class StoreAbstract {
+class StoreAbstract 
+{
 
     /**
      * Config from uploader.
@@ -85,8 +86,7 @@ class StoreAbstract {
      */
     public function inject($config = array())
     {
-        if (is_array($config))
-        {
+        if (is_array($config)) {
             $this->config = array_merge($this->config, $config);
         }
 
@@ -137,8 +137,7 @@ class StoreAbstract {
         $path = $this->config['subpath'];
 
         // Path config can be closure.
-        if ($path instanceof Closure)
-        {
+        if ($path instanceof Closure) {
             return $path() ? $base.'/'.$path().'/' : $base.'/';
         }
 
@@ -155,8 +154,7 @@ class StoreAbstract {
         // Fire a result to callback.
         $onUpload = $this->config['onUpload'];
 
-        if ($onUpload instanceof Closure)
-        {
+        if ($onUpload instanceof Closure) {
             $onUpload($result);
         }
 
@@ -191,9 +189,7 @@ class StoreAbstract {
     public function __destruct()
     {
         $onComplete = $this->config['onComplete'];
-
-        if ($onComplete instanceof Closure)
-        {
+        if ($onComplete instanceof Closure) {
             $onComplete($this->results);
         }
     }

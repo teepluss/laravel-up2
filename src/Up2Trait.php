@@ -1,7 +1,11 @@
-<?php namespace Teepluss\Up2;
+<?php 
 
-trait Up2Trait {
+namespace Teepluss\Up2;
 
+use Config;
+
+trait Up2Trait 
+{
     /**
      * Boot the Up2 trait for a model.
      *
@@ -19,7 +23,7 @@ trait Up2Trait {
      */
     public function attachments()
     {
-        $attachmentsModel = \Config::get('up2::attachments.model');
+        $attachmentsModel = Config::get('up2.config.attachments.model');
 
         return $this->morphToMany($attachmentsModel, 'attachmentable');
     }

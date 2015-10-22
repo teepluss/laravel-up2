@@ -1,10 +1,13 @@
-<?php namespace Teepluss\Up2\Attachments\Eloquent;
+<?php 
 
+namespace Teepluss\Up2\Attachments\Eloquent;
+
+use DB, Config;
 use Illuminate\Database\Eloquent\Model;
 use Teepluss\Up2\Attachments\AttachmentInterface;
 
-class Attachment extends Model implements AttachmentInterface {
-
+class Attachment extends Model implements AttachmentInterface 
+{
     /**
      * DB table.
      *
@@ -27,9 +30,8 @@ class Attachment extends Model implements AttachmentInterface {
     public static function boot()
     {
         // Delete relate after delete attachment.
-        static::deleted(function($attachment)
-        {
-            \DB::table('attachmentables')->where('attachment_id', $attachment->id)->delete();
+        static::deleted(function($attachment) {
+            DB::table('attachmentables')->where('attachment_id', $attachment->id)->delete();
         });
     }
 
@@ -43,13 +45,6 @@ class Attachment extends Model implements AttachmentInterface {
      */
     public function add($result)
     {
-        // If you want to add something else.
-        // $result = array_merge($result, array(
-        //     'user_id' => Auth::user()->id
-        // ));
-
-        //$attachment = new static();
-
         $this->fill($result);
 
         return $this->save();
@@ -62,10 +57,9 @@ class Attachment extends Model implements AttachmentInterface {
      */
     public function attachmentable()
     {
-        $attachmentModel = \Config::get('up2::attachments.model');
+        $attachmentModel = Config::get('up2.config.attachments.model');
 
-        if ( ! $attachmentModel)
-        {
+        if (! $attachmentModel) {
             $attachmentModel = '\Teepluss\Up2\Attachments\Eloquent\Attachment';
         }
 

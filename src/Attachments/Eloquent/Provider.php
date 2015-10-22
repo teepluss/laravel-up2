@@ -1,9 +1,11 @@
-<?php namespace Teepluss\Up2\Attachments\Eloquent;
+<?php 
+
+namespace Teepluss\Up2\Attachments\Eloquent;
 
 use Teepluss\Up2\Attachments\ProviderInterface;
 
-class Provider implements ProviderInterface {
-
+class Provider implements ProviderInterface 
+{
     /**
      * Attachment Model.
      *
@@ -19,8 +21,7 @@ class Provider implements ProviderInterface {
     public function __construct($model = null)
     {
         // Model pass from service provider.
-        if (isset($model))
-        {
+        if (isset($model)) {
             $this->model = $model;
         }
     }
