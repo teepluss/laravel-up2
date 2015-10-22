@@ -37,16 +37,16 @@ UP2 also ships with a facade which provides the static syntax for creating colle
 ]
 ~~~
 
-Publish config using artisan CLI.
+Publish using artisan CLI.
 
 ~~~
-php artisan config:publish teepluss/up2
+php artisan vendor:publish --provider="Teepluss\Up2\Up2ServiceProvider"
 ~~~
 
 Migrate tables.
 
 ~~~
-php artisan vendor:publish --provider="Teepluss\Up2\Up2ServiceProvider"
+php artisan migrate
 ~~~
 
 ## Usage
