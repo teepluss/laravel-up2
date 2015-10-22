@@ -100,7 +100,7 @@ UP2::upload(Product::find(1), Input::file('userfile'))->resize()->getResults();
 UP2::upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getMasterResult();
 
 // UP2 can upload remote file.
-UP2::inject(array('remote' => true))->upload(User::find(1), Input::file('userfile'), array('some_id' => 999))->getResults();
+UP2::inject(array('remote' => true))->upload(User::find(1), 'http://domain.com/image.png', array('some_id' => 999))->getResults();
 ~~~
 
 Upload without model.
