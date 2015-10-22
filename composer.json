@@ -1,8 +1,8 @@
 {
     "name": "teepluss/up2",
     "description": "UP2 is a file uploader with polymorphic relations.",
-    "keywords": ["laravel", "laravel4", "upload", "resize"],
-    "homepage": "https://github.com/teepluss/laravel4-up2",
+    "keywords": ["laravel", "upload", "resize"],
+    "homepage": "https://github.com/teepluss/laravel-up2",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -12,19 +12,16 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.0",
         "imagine/imagine": "v0.6.1",
         "league/flysystem-aws-s3-v2": "1.0.1"
     },
     "require-dev": {
-        "illuminate/support": "4.1.x"
+        "illuminate/support": ">=5.0.1"
     },
     "autoload": {
-        "classmap": [
-            "src/migrations"
-        ],
-        "psr-0": {
-            "Teepluss\\Up2": "src/"
+        "psr-4": {
+            "Teepluss\\Up2\\": "src/"
         }
     },
     "minimum-stability": "dev"
