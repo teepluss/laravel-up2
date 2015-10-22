@@ -22,9 +22,10 @@ class LocalStorage extends StoreAbstract implements StoreInterface
     {
         $location = $node['location'];
 
-
-        dump($this->path(), $location);
-        
+        // Append server path to location.
+        if ($location) {
+            $location = $this->config['baseDir'].$location;
+        }
 
         $result = $this->results($location);
 
