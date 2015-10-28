@@ -62,7 +62,7 @@ return array(
         'drivers' => array(
 
             'local' => array(
-                'baseUrl' => url(''),
+                'baseUrl' => '/',
                 'baseDir' => public_path(),
             ),
 
