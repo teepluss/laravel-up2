@@ -3,13 +3,29 @@
 namespace Teepluss\Up2;
 
 use Closure;
-use Imagine\Image\Box;
-use Imagine\Gd\Imagine;
-use Imagine\Image\Point;
-use Imagine\Image\ImageInterface;
+use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
+use Illuminate\Filesystem\Filesystem;
 
 class LocalStorage extends StoreAbstract implements StoreInterface 
 {
+    protected $imageManager;
+
+    /**
+     * Create Uploader instance.
+     *
+     * @param Repository $config
+     * @param Request    $request
+     * @param Filesystem $files
+     */
+    public function __construct(array $config, Request $request, Filesystem $files)
+    {
+        parent::__construct($config, $request, $files);
+
+        // create an image manager instance with favored driver
+        $this->imageManager = new ImageManager(array('driver' => 'GD'));
+    }
+
     /**
      * Open the location path.
      *
@@ -101,31 +117,36 @@ class LocalStorage extends StoreAbstract implements StoreInterface
         // Original name.
         $origName = $file->getClientOriginalName();
 
+        // Get mime type.
+        $fileMimeType = $file->getMimeType();
+
+        // Extension.
+        $extension = $file->getClientOriginalExtension();
+
         // Generate a file name with extension.
         $fileName = $this->name($origName);
 
         // Fix for some system can't access tmp file by buagern@buataitom.com
         $file->move($path, $fileName);
+
         $uploadedFile = $path.$fileName;
         // End fixed
-
-        // Use Imagine to reduce size and quality depend on config.
-        $options = array(
-            'jpeg_quality'          => array_get($this->config, 'quality.jpeg', 90),
-            'png_compression_level' => array_get($this->config, 'quality.png', 90) / 10,
-        );
-
-        $imagine = new Imagine();
-
-        // Fix for some system can't access tmp file by buagern@buataitom.com
-        $image = $imagine->open($uploadedFile);
-        // End fixed
-
-        $image->interlace(ImageInterface::INTERLACE_PLANE);
-
+        
         $uploadPath = $path.$fileName;
 
-        if ($image->save($uploadPath, $options)) {
+        if (preg_match('/image/', $fileMimeType)) {
+            if (in_array($extension, ['jpg', 'jpeg'])) {
+                $uploadedFile = $this->imageManager->make($uploadedFile)->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
+            } elseif ($extension == 'png') {
+                $uploadedFile = $this->imageManager->make($uploadedFile)->encode('png', array_get($this->config, 'quality.png', 90));
+            }
+
+            if ($uploadedFile->save($uploadPath)) {
+                return $this->results($uploadPath);
+            }
+        }
+
+        if ($uploadedFile) {
             return $this->results($uploadPath);
         }
 
@@ -309,8 +330,8 @@ class LocalStorage extends StoreAbstract implements StoreInterface
 
         // Master image valid.
         if (! is_null($master) and preg_match('|image|', $master['mime'])) {
-            $imagine = new Imagine();
-            $image = $imagine->open($master['location']);
+
+            $image = $this->imageManager->make($master['location']);
 
             // Path with base dir.
             $path = $this->path($this->config['baseDir']);
@@ -335,19 +356,23 @@ class LocalStorage extends StoreAbstract implements StoreInterface
                 // Get width and height.
                 list($w, $h) = $scales[$size];
 
-
                 // Path with the name include scale and extension.
                 $uploadPath = $path.$master['fileName'].'_'.$size.'.'.$master['fileExtension'];
 
-                // Use Imagine to make resize and crop.
-                $options = array(
-                    'jpeg_quality'          => array_get($this->config, 'quality.jpeg', 90),
-                    'png_compression_level' => array_get($this->config, 'quality.png', 90) / 10,
-                );
+                if ($beforeResize = array_get($this->config, 'beforeResize')) {
+                    $image = $beforeResize($image);
+                }
 
-                $image->thumbnail(new Box($w, $h), 'outbound')
-                      ->interlace(ImageInterface::INTERLACE_PLANE)
-                      ->save($uploadPath, $options);
+                $image->resize($w, $h);
+
+                if ($afterResize = array_get($this->config, 'afterResize')) {
+                    $image = $afterResize($image);
+                }
+
+                $content = $image->encode($master['fileExtension']);
+
+                //$this->filesystem->put($uploadPath, $content);
+                $content->save($uploadPath);
 
                 // Add a result and fired.
                 $result = $this->results($uploadPath, $size);

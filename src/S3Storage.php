@@ -3,17 +3,13 @@
 namespace Teepluss\Up2;
 
 use Closure;
-use Imagine\Image\Box;
-use Imagine\Gd\Imagine;
-use Imagine\Image\Point;
-use Imagine\Image\ImageInterface;
 use Aws\S3\S3Client;
 use League\Flysystem\AwsS3v2\AwsS3Adapter;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\Filesystem as S3Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Filesystem\Filesystem;
-
+use Intervention\Image\ImageManager;
 
 class S3Storage extends StoreAbstract implements StoreInterface 
 {
@@ -30,6 +26,9 @@ class S3Storage extends StoreAbstract implements StoreInterface
      * @var object
      */
     protected $filesystem;
+
+
+    protected $imageManager;
 
     /**
      * Create Uploader instance.
@@ -48,6 +47,10 @@ class S3Storage extends StoreAbstract implements StoreInterface
             'region' => $config['region']
         ));
 
+        // create an image manager instance with favored driver
+        $this->imageManager = new ImageManager(array('driver' => 'GD'));
+
+        // S3 File system.
         $this->filesystem = new S3Filesystem(new AwsS3Adapter($this->client, $config['bucket'], null));
     }
 
@@ -159,22 +162,22 @@ class S3Storage extends StoreAbstract implements StoreInterface
         // Generate a file name with extension.
         $fileName = $this->name($origName);
 
-        // Use Imagine to reduce size and quality depend on config.
-        $options = array(
-            'jpeg_quality'          => array_get($this->config, 'quality.jpeg', 90),
-            'png_compression_level' => array_get($this->config, 'quality.png', 90) / 10,
-        );
+        // Get mime type.
+        $fileMimeType = $file->getMimeType();
 
-        $imagine = new Imagine();
-        $image = $imagine->open($file);
-
-        $image->interlace(ImageInterface::INTERLACE_PLANE);
-
+        // Upload path.
         $uploadPath = $path.$fileName;
 
-        $content = $image->get($extension, $options);
+        if (preg_match('/image/', $fileMimeType)) {
+            if (in_array($extension, ['jpg', 'jpeg'])) {
+                $file = $this->imageManager->make($file)->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
+            } elseif ($extension == 'png') {
+                $file = $this->imageManager->make($file)->encode('png', array_get($this->config, 'quality.png', 90));
+            }
+        }
 
-        if ($this->filesystem->put($uploadPath, $content)) {
+        // Put file to s3.
+        if ($this->filesystem->put($uploadPath, $file)) {
             return $this->results($uploadPath);
         }
 
@@ -343,7 +346,6 @@ class S3Storage extends StoreAbstract implements StoreInterface
         // A master file to resize.
         $master = $this->master;
 
-
         // Master image valid.
         if (! is_null($master) and preg_match('|image|', $master['mime'])) {
             $imageUrl = $this->requestUrl($master['location']);
@@ -352,8 +354,9 @@ class S3Storage extends StoreAbstract implements StoreInterface
                 return false;
             }
 
-            $imagine = new Imagine();
-            $image = $imagine->open($imageUrl);
+            // Get binary, then open with Intervention.
+            $imageBin = file_get_contents($imageUrl);
+            $image = $this->imageManager->make($imageBin);
 
             // Path with base dir.
             $path = $this->path();
@@ -381,16 +384,20 @@ class S3Storage extends StoreAbstract implements StoreInterface
                 // Path with the name include scale and extension.
                 $uploadPath = $path.$master['fileName'].'_'.$size.'.'.$master['fileExtension'];
 
-                // Use Imagine to make resize and crop.
-                $options = array(
-                    'jpeg_quality'          => array_get($this->config, 'quality.jpeg', 90),
-                    'png_compression_level' => array_get($this->config, 'quality.png', 90) / 10,
-                );
+                // Before resize event.
+                if ($beforeResize = array_get($this->config, 'beforeResize')) {
+                    $image = $beforeResize($image);
+                }
 
-                $content = $image->thumbnail(new Box($w, $h), 'outbound')
-                                 ->interlace(ImageInterface::INTERLACE_PLANE)
-                                 ->get($master['fileExtension'], $options);
+                $image->resize($w, $h);
 
+                // After resize event.
+                if ($afterResize = array_get($this->config, 'afterResize')) {
+                    $image = $afterResize($image);
+                }
+
+                // Get binary.
+                $content = $image->encode($master['fileExtension']);
 
                 $this->filesystem->put($uploadPath, $content);
 

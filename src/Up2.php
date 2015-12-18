@@ -161,9 +161,9 @@ class Up2
      *
      * @return Up
      */
-    public function resize()
+    public function resize($sizes = [])
     {
-        $this->uploadInit->resize();
+        $this->uploadInit->resize($sizes);
 
         return $this;
     }

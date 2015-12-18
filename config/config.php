@@ -62,15 +62,15 @@ return array(
         'drivers' => array(
 
             'local' => array(
-                'baseUrl' => '/',
+                'baseUrl' => 'http://51.laravel.app',
                 'baseDir' => public_path(),
             ),
 
             's3' => array(
-                'key'    => '',
-                'secret' => '',
-                'region' => 'ap-southeast-1',
-                'bucket' => 'teeplus',
+                'key'    => env('S3_KEY', ''),
+                'secret' => env('S3_SECRET', ''),
+                'region' => env('S3_REGION', 'ap-southeast-1'),
+                'bucket' => env('S3_BUCKET', ''),
             ),
 
         ),
@@ -167,5 +167,31 @@ return array(
         */
 
         'onRemove' => null,
+
+        /*
+        |--------------------------------------------------------------------------
+        | Before Resize.
+        |--------------------------------------------------------------------------
+        |
+        | Return Intervention to interrupt before resize. 
+        |
+        */
+
+        'beforeResize' => function($imageManager) {
+            return $imageManager;
+        },
+
+        /*
+        |--------------------------------------------------------------------------
+        | After Resize.
+        |--------------------------------------------------------------------------
+        |
+        | Return Intervention to interrupt after resize. 
+        |
+        */
+
+        'afterResize' => function($imageManager) {
+            return $imageManager;
+        }
     ]
 );
