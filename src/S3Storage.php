@@ -48,7 +48,7 @@ class S3Storage extends StoreAbstract implements StoreInterface
         ));
 
         // create an image manager instance with favored driver
-        $this->imageManager = new ImageManager(array('driver' => 'GD'));
+        $this->imageManager = new ImageManager(array('driver' => 'Gd'));
 
         // S3 File system.
         $this->filesystem = new S3Filesystem(new AwsS3Adapter($this->client, $config['bucket'], null));
@@ -389,7 +389,7 @@ class S3Storage extends StoreAbstract implements StoreInterface
                     $image = $beforeResize($image);
                 }
 
-                $image->resize($w, $h);
+                $image->fit($w, $h);
 
                 // After resize event.
                 if ($afterResize = array_get($this->config, 'afterResize')) {

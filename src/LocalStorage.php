@@ -23,7 +23,7 @@ class LocalStorage extends StoreAbstract implements StoreInterface
         parent::__construct($config, $request, $files);
 
         // create an image manager instance with favored driver
-        $this->imageManager = new ImageManager(array('driver' => 'GD'));
+        $this->imageManager = new ImageManager(array('driver' => 'Gd'));
     }
 
     /**
@@ -363,7 +363,7 @@ class LocalStorage extends StoreAbstract implements StoreInterface
                     $image = $beforeResize($image);
                 }
 
-                $image->resize($w, $h);
+                $image->fit($w, $h);
 
                 if ($afterResize = array_get($this->config, 'afterResize')) {
                     $image = $afterResize($image);
