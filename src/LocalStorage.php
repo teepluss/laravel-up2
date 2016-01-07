@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Teepluss\Up2;
 
@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Filesystem\Filesystem;
 
-class LocalStorage extends StoreAbstract implements StoreInterface 
+class LocalStorage extends StoreAbstract implements StoreInterface
 {
     protected $imageManager;
 
@@ -131,7 +131,7 @@ class LocalStorage extends StoreAbstract implements StoreInterface
 
         $uploadedFile = $path.$fileName;
         // End fixed
-        
+
         $uploadPath = $path.$fileName;
 
         if (preg_match('/image/', $fileMimeType)) {
@@ -333,6 +333,9 @@ class LocalStorage extends StoreAbstract implements StoreInterface
 
             $image = $this->imageManager->make($master['location']);
 
+            // backup status
+            $image->backup();
+
             // Path with base dir.
             $path = $this->path($this->config['baseDir']);
 
@@ -379,6 +382,9 @@ class LocalStorage extends StoreAbstract implements StoreInterface
 
                 // Add a result.
                 $this->addResult($result);
+
+                // reset image (return to backup state)
+                $image->reset();
             }
         }
 

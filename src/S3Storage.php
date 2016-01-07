@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Teepluss\Up2;
 
@@ -11,18 +11,18 @@ use Illuminate\Http\Request;
 use Illuminate\Filesystem\Filesystem;
 use Intervention\Image\ImageManager;
 
-class S3Storage extends StoreAbstract implements StoreInterface 
+class S3Storage extends StoreAbstract implements StoreInterface
 {
     /**
      * S3 Storage Client
-     * 
+     *
      * @var object
      */
     protected $client;
 
     /**
      * S3 Filesystem
-     * 
+     *
      * @var object
      */
     protected $filesystem;
@@ -358,6 +358,9 @@ class S3Storage extends StoreAbstract implements StoreInterface
             $imageBin = file_get_contents($imageUrl);
             $image = $this->imageManager->make($imageBin);
 
+            // backup status
+            $image->backup();
+
             // Path with base dir.
             $path = $this->path();
 
@@ -406,6 +409,9 @@ class S3Storage extends StoreAbstract implements StoreInterface
 
                 // Add a result.
                 $this->addResult($result);
+
+                // reset image (return to backup state)
+                $image->reset();
             }
         }
 
