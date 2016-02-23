@@ -14,7 +14,7 @@
     "require": {
         "php": ">=5.4.0",
         "intervention/image": "2.3.*",
-        "league/flysystem-aws-s3-v2": "1.0.1"
+        "league/flysystem-aws-s3-v2": "1.0.*"
     },
     "require-dev": {
         "illuminate/support": ">=5.0.1"
