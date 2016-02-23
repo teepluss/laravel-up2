@@ -10,6 +10,6 @@ if (! function_exists('up')) {
      */
     function up()
     {
-        return new Up2()
+        return new Up2();
     }
 }
