@@ -121,7 +121,8 @@ class LocalStorage extends StoreAbstract implements StoreInterface
         $fileMimeType = $file->getMimeType();
 
         // Extension.
-        $extension = $file->getClientOriginalExtension();
+        // $extension = $file->getClientOriginalExtension();
+        $extension = strtolower($file->getClientOriginalExtension());
 
         // Generate a file name with extension.
         $fileName = $this->name($origName);
@@ -139,6 +140,10 @@ class LocalStorage extends StoreAbstract implements StoreInterface
                 $uploadedFile = $this->imageManager->make($uploadedFile)->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
             } elseif ($extension == 'png') {
                 $uploadedFile = $this->imageManager->make($uploadedFile)->encode('png', array_get($this->config, 'quality.png', 90));
+            } elseif ($extension == 'gif') {
+                $uploadedFile = $this->imageManager->make($uploadedFile)->encode('gif', array_get($this->config, 'quality.gif', 90));
+            } else {
+                $uploadedFile = $this->imageManager->make($uploadedFile)->encode();
             }
 
             if ($uploadedFile->save($uploadPath)) {
