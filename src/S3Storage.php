@@ -157,7 +157,8 @@ class S3Storage extends StoreAbstract implements StoreInterface
         $origName = $file->getClientOriginalName();
 
         // Extension.
-        $extension = $file->getClientOriginalExtension();
+        // $extension = $file->getClientOriginalExtension();
+        $extension = strtolower($file->getClientOriginalExtension());
 
         // Generate a file name with extension.
         $fileName = $this->name($origName);
@@ -173,6 +174,10 @@ class S3Storage extends StoreAbstract implements StoreInterface
                 $file = $this->imageManager->make($file)->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
             } elseif ($extension == 'png') {
                 $file = $this->imageManager->make($file)->encode('png', array_get($this->config, 'quality.png', 90));
+            } elseif ($extension == 'gif') {
+                $file = $this->imageManager->make($file)->encode('gif', array_get($this->config, 'quality.gif', 90));
+            } else {
+                $file = $this->imageManager->make($file)->encode();
             }
         }
 
