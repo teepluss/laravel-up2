@@ -170,14 +170,21 @@ class S3Storage extends StoreAbstract implements StoreInterface
         $uploadPath = $path.$fileName;
 
         if (preg_match('/image/', $fileMimeType)) {
+            $imageManager = $this->imageManager->make($file);
+
+            // Before upload event.
+            if ($beforeUpload = array_get($this->config, 'beforeUpload')) {
+                $imageManager = $beforeUpload($imageManager);
+            }
+
             if (in_array($extension, ['jpg', 'jpeg'])) {
-                $file = $this->imageManager->make($file)->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
+                $file = $imageManager->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
             } elseif ($extension == 'png') {
-                $file = $this->imageManager->make($file)->encode('png', array_get($this->config, 'quality.png', 90));
+                $file = $imageManager->encode('png', array_get($this->config, 'quality.png', 90));
             } elseif ($extension == 'gif') {
-                $file = $this->imageManager->make($file)->encode('gif', array_get($this->config, 'quality.gif', 90));
+                $file = $imageManager->encode('gif', array_get($this->config, 'quality.gif', 90));
             } else {
-                $file = $this->imageManager->make($file)->encode();
+                $file = $imageManager->encode();
             }
         }
 
@@ -396,8 +403,6 @@ class S3Storage extends StoreAbstract implements StoreInterface
                 if ($beforeResize = array_get($this->config, 'beforeResize')) {
                     $image = $beforeResize($image);
                 }
-
-                $image->fit($w, $h);
 
                 // After resize event.
                 if ($afterResize = array_get($this->config, 'afterResize')) {

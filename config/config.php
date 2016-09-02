@@ -170,10 +170,22 @@ return array(
 
         /*
         |--------------------------------------------------------------------------
+        | Before Upload.
+        |--------------------------------------------------------------------------
+        |
+        | Return Intervention to interrupt before upload.
+        |
+        */
+        'beforeUpload' => function($imageManager)
+            return $imageManager;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | Before Resize.
         |--------------------------------------------------------------------------
         |
-        | Return Intervention to interrupt before resize. 
+        | Return Intervention to interrupt before resize.
         |
         */
 
@@ -186,7 +198,7 @@ return array(
         | After Resize.
         |--------------------------------------------------------------------------
         |
-        | Return Intervention to interrupt after resize. 
+        | Return Intervention to interrupt after resize.
         |
         */
 

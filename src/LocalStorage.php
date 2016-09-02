@@ -136,14 +136,27 @@ class LocalStorage extends StoreAbstract implements StoreInterface
         $uploadPath = $path.$fileName;
 
         if (preg_match('/image/', $fileMimeType)) {
+
+            $imageManager = $this->imageManager->make($uploadedFile);
+
+            // Before upload event.
+            if ($beforeUpload = array_get($this->config, 'beforeUpload')) {
+                $imageManager = $beforeUpload($imageManager);
+            }
+
             if (in_array($extension, ['jpg', 'jpeg'])) {
-                $uploadedFile = $this->imageManager->make($uploadedFile)->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
+                $uploadedFile = $imageManager->encode('jpg', array_get($this->config, 'quality.jpeg', 90));
             } elseif ($extension == 'png') {
-                $uploadedFile = $this->imageManager->make($uploadedFile)->encode('png', array_get($this->config, 'quality.png', 90));
+                $uploadedFile = $imageManager->encode('png', array_get($this->config, 'quality.png', 90));
             } elseif ($extension == 'gif') {
-                $uploadedFile = $this->imageManager->make($uploadedFile)->encode('gif', array_get($this->config, 'quality.gif', 90));
+                $uploadedFile = $imageManager->encode('gif', array_get($this->config, 'quality.gif', 90));
             } else {
-                $uploadedFile = $this->imageManager->make($uploadedFile)->encode();
+                $uploadedFile = $imageManager->encode();
+            }
+
+            // Before upload event.
+            if ($beforeUpload = array_get($this->config, 'beforeUpload')) {
+                $image = $beforeResize($uploadedFile);
             }
 
             if ($uploadedFile->save($uploadPath)) {
