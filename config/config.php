@@ -176,9 +176,9 @@ return array(
         | Return Intervention to interrupt before upload.
         |
         */
-        'beforeUpload' => function($imageManager)
+        'beforeUpload' => function($imageManager) {
             return $imageManager;
-        }
+        },
 
         /*
         |--------------------------------------------------------------------------

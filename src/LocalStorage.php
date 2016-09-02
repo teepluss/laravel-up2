@@ -156,7 +156,7 @@ class LocalStorage extends StoreAbstract implements StoreInterface
 
             // Before upload event.
             if ($beforeUpload = array_get($this->config, 'beforeUpload')) {
-                $image = $beforeResize($uploadedFile);
+                $image = $beforeUpload($uploadedFile);
             }
 
             if ($uploadedFile->save($uploadPath)) {
