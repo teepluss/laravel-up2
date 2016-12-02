@@ -16,7 +16,7 @@ class LocalStorage extends StoreAbstract implements StoreInterface {
      * @param   string  $name
      * @return  Attach
      */
-    public function open($name)
+    public function open($node)
     {
         $location = $node['location'];
 
